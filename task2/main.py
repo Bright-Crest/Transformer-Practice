@@ -78,7 +78,7 @@ def train(is_with_tensorboard=True, seed=42):
         output_dir = os.path.join("output", datetime.datetime.now().strftime('%m-%d_%H-%M-%S'))
     os.makedirs(output_dir, exist_ok=True)
 
-    model.save_checkpoint(os.path.join(output_dir,"transformer.pt"))
+    model.save_checkpoint(os.path.join(output_dir,"transformer.pth"))
 
     fig = model.plot_losses()
     fig.savefig(os.path.join(output_dir,"transformer_loss.png"))
@@ -120,7 +120,7 @@ def predict(model_dir, input_file, output_file = None, target_len = None):
         model_transformer.parameters(), lr=LEARNING_RATE)
 
     model = Pipeline(model_transformer, loss, optimizer)
-    model.load_checkpoint(os.path.join("output", model_dir, "transformer.pt"))
+    model.load_checkpoint(os.path.join("output", model_dir, "transformer.pth"))
 
     output = model.predict(input, input_padding_mask).squeeze(0)
     if target_len:
