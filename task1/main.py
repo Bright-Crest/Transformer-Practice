@@ -32,17 +32,17 @@ parser_predict.add_argument("-o", "--output-file", type=str, help="(可选参数
 def train(is_with_tensorboard=True, seed=42):
     torch.manual_seed(seed)
 
-    pre_model = Model(8, 2)
+    pre_model = Model(INPUT_DIM, OUTPUT_DIM)
     model = ModuleWithScaler(pre_model)
 
     data = read_data(DATA_FILE, DATA_LENGTH)
-    X_training, X_test, y_training, y_test = split_data(data, TRAINING_RATIO)
+    X_training, X_test, y_training, y_test = split_data(data, INPUT_DIM, TRAINING_RATIO)
 
     X_training = model.fit_scaler(X_training, True)
     X_test = model.apply_scaler(X_test, True)
     y_training = model.fit_scaler(y_training, False)
     y_test = model.apply_scaler(y_test, False)
-
+    
     training_loader, test_loader = create_dataloader(X_training, X_test, y_training, y_test, batch_size=BATCH_SIZE)
 
     loss = nn.MSELoss()
@@ -90,9 +90,10 @@ def train(is_with_tensorboard=True, seed=42):
 
 def predict(model_dir, input_file, output_file = None):
     input = read_data(input_file)
+    input = input[:, :INPUT_DIM]
 
-    pre_model = Model(8, 2)
-    model = ModuleWithScaler(pre_model, StandardScaler(shape=(1, 8)), StandardScaler(shape=(1, 2)))
+    pre_model = Model(INPUT_DIM, OUTPUT_DIM) 
+    model = ModuleWithScaler(pre_model, StandardScaler(shape=(1, INPUT_DIM)), StandardScaler(shape=(1, OUTPUT_DIM)))
 
     loss = nn.MSELoss()
     optimizer = torch.optim.Adam(

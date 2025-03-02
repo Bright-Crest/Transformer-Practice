@@ -69,7 +69,8 @@ class TransformerModel(nn.Module):
         
     def forward(self, X, source_mask=None):
         self.trg_masks = self.trg_masks.type_as(X)
-        source_mask = source_mask.type_as(X)
+        if source_mask:
+            source_mask = source_mask.type_as(X)
         source_seq = X[:, :self.input_len, :]
 
         if self.training:            

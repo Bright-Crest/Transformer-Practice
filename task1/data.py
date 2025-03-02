@@ -10,7 +10,8 @@ def read_data(filename, length=None):
         data = data[:length]
     return data
 
-def split_data(data: torch.Tensor, training_ratio=0.8):
+
+def split_data(data: torch.Tensor, input_dim, training_ratio=0.8):
     shuffle = True
     training_len = round(data.shape[0] * training_ratio)
     if not shuffle:
@@ -21,7 +22,8 @@ def split_data(data: torch.Tensor, training_ratio=0.8):
         training_data = data[torch.as_tensor(training_indices)]
         testing_data = data[torch.as_tensor(testing_indices)]
 
-    return training_data[:, :8], testing_data[:, :8], training_data[:, 8:], testing_data[:, 8:]
+    return training_data[:, :input_dim], testing_data[:, :input_dim], training_data[:, input_dim:], testing_data[:, input_dim:]
+
 
 def create_dataloader(X_training, X_test, y_training, y_test, batch_size = 16):
     # training
